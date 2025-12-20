@@ -482,18 +482,25 @@
             try {
                 showStatus('<span class="spinner"></span>Carregando alunos...', 'loading');
                 
-                const response = await fetch(`${API_URL}?action=get_students`);
+                const url = `${API_URL}?action=get_students`;
+                console.log('Buscando alunos de:', url);
+                
+                const response = await fetch(url);
                 const data = await response.json();
                 
-                if (data.students && Array.isArray(data.students)) {
+                console.log('Resposta da API:', data);
+                
+                if (data.students && Array.isArray(data.students) && data.students.length > 0) {
                     state.students = data.students;
+                    console.log('Alunos carregados com sucesso:', state.students);
                     showStatus('', '');
                 } else {
-                    showStatus('Erro ao carregar alunos. Tente recarregar a página.', 'error');
+                    console.error('Nenhum aluno encontrado ou erro na resposta:', data);
+                    showStatus('Erro ao carregar alunos. Verifique se há alunos ativos na planilha.', 'error');
                 }
             } catch (error) {
                 console.error('Erro ao carregar alunos:', error);
-                showStatus('Erro de conexão ao carregar alunos.', 'error');
+                showStatus('Erro de conexão ao carregar alunos. Verifique a URL do Web App.', 'error');
             }
         }
 
