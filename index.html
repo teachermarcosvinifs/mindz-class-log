@@ -1,742 +1,210 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro de Aula - Prints & Materiais</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8" />
+  <title>Registro de Aula</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #6b6bd6, #7f7fe8);
+      margin: 0;
+      padding: 40px 0;
+    }
 
-        .container {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            max-width: 600px;
-            width: 100%;
-            padding: 40px;
-        }
+    .card {
+      background: #fff;
+      max-width: 520px;
+      margin: auto;
+      padding: 28px;
+      border-radius: 14px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    }
 
-        h1 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 28px;
-        }
+    h1 {
+      font-size: 20px;
+      margin-bottom: 4px;
+    }
 
-        .subtitle {
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 14px;
-        }
+    p.subtitle {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 22px;
+    }
 
-        .form-group {
-            margin-bottom: 25px;
-        }
+    label {
+      font-size: 13px;
+      font-weight: bold;
+      display: block;
+      margin-top: 18px;
+    }
 
-        label {
-            display: block;
-            color: #333;
-            font-weight: 600;
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
+    label span {
+      font-weight: normal;
+      color: #888;
+    }
 
-        .label-hint {
-            color: #999;
-            font-weight: normal;
-            font-size: 12px;
-            margin-left: 5px;
-        }
+    select, textarea, input {
+      width: 100%;
+      margin-top: 6px;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
 
-        input[type="text"],
-        input[type="email"],
-        select,
-        textarea {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 6px;
-            font-size: 14px;
-            transition: border-color 0.3s;
-            font-family: inherit;
-        }
+    select[multiple] {
+      height: 120px;
+    }
 
-        input[type="text"]:focus,
-        input[type="email"]:focus,
-        select:focus,
-        textarea:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
+    textarea {
+      resize: vertical;
+      min-height: 70px;
+    }
 
-        textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
+    .upload-box {
+      border: 2px dashed #bbb;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      margin-top: 8px;
+      cursor: pointer;
+      color: #666;
+      font-size: 13px;
+    }
 
-        /* Dropdown com Autocomplete */
-        .autocomplete-wrapper {
-            position: relative;
-        }
+    .upload-box:hover {
+      background: #f7f7f7;
+    }
 
-        .autocomplete-list {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: white;
-            border: 2px solid #e0e0e0;
-            border-top: none;
-            border-radius: 0 0 6px 6px;
-            max-height: 200px;
-            overflow-y: auto;
-            z-index: 1000;
-            display: none;
-        }
+    .buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 28px;
+    }
 
-        .autocomplete-list.active {
-            display: block;
-        }
+    button {
+      flex: 1;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      font-size: 14px;
+      cursor: pointer;
+    }
 
-        .autocomplete-item {
-            padding: 10px 12px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
+    button.submit {
+      background: #6b6bd6;
+      color: #fff;
+    }
 
-        .autocomplete-item:hover {
-            background: #f0f2ff;
-        }
+    button.clear {
+      background: #eee;
+    }
 
-        .autocomplete-item.selected {
-            background: #667eea;
-            color: white;
-        }
-
-        /* Área de Drop para Prints */
-        .prints-section {
-            margin-top: 30px;
-            padding-top: 30px;
-            border-top: 2px solid #f0f0f0;
-        }
-
-        .prints-title {
-            color: #333;
-            font-weight: 600;
-            margin-bottom: 15px;
-            font-size: 14px;
-        }
-
-        .print-drop-zone {
-            border: 3px dashed #667eea;
-            border-radius: 8px;
-            padding: 30px 20px;
-            text-align: center;
-            background: #f8f9ff;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-        }
-
-        .print-drop-zone:hover {
-            border-color: #764ba2;
-            background: #f0f2ff;
-        }
-
-        .print-drop-zone.dragover {
-            border-color: #764ba2;
-            background: #e8ebff;
-            transform: scale(1.02);
-        }
-
-        .drop-icon {
-            font-size: 40px;
-            margin-bottom: 10px;
-        }
-
-        .drop-text {
-            color: #667eea;
-            font-weight: 600;
-            margin-bottom: 5px;
-            font-size: 15px;
-        }
-
-        .drop-hint {
-            color: #999;
-            font-size: 12px;
-        }
-
-        .hidden-file-input {
-            display: none;
-        }
-
-        /* Galeria de Prints */
-        .prints-gallery {
-            margin-top: 20px;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 12px;
-        }
-
-        .print-item {
-            position: relative;
-            border-radius: 6px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .print-image {
-            width: 100%;
-            height: 100px;
-            object-fit: cover;
-            display: block;
-        }
-
-        .print-remove {
-            position: absolute;
-            top: 4px;
-            right: 4px;
-            background: rgba(255, 0, 0, 0.8);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            font-size: 16px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.2s;
-        }
-
-        .print-remove:hover {
-            background: rgba(255, 0, 0, 1);
-        }
-
-        .print-counter {
-            color: #999;
-            font-size: 12px;
-            margin-top: 10px;
-            text-align: center;
-        }
-
-        /* Botões */
-        .button-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 30px;
-        }
-
-        .submit-btn,
-        .close-btn {
-            flex: 1;
-            padding: 14px;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .submit-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .submit-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
-        }
-
-        .submit-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .close-btn {
-            background: #f0f0f0;
-            color: #333;
-        }
-
-        .close-btn:hover {
-            background: #e0e0e0;
-        }
-
-        /* Status Messages */
-        .status-message {
-            padding: 12px;
-            border-radius: 6px;
-            margin-top: 15px;
-            font-size: 14px;
-            display: none;
-        }
-
-        .status-message.show {
-            display: block;
-        }
-
-        .status-message.success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .status-message.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        .status-message.loading {
-            background: #d1ecf1;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
-        }
-
-        .spinner {
-            display: inline-block;
-            width: 14px;
-            height: 14px;
-            border: 2px solid rgba(12, 84, 96, 0.3);
-            border-top-color: #0c5460;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin-right: 8px;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .loading-students {
-            text-align: center;
-            color: #999;
-            padding: 20px;
-        }
-
-        @media (max-width: 600px) {
-            .container {
-                padding: 25px;
-            }
-
-            h1 {
-                font-size: 24px;
-            }
-
-            .button-group {
-                flex-direction: column;
-            }
-
-            .prints-gallery {
-                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-            }
-        }
-    </style>
+    .status {
+      margin-top: 16px;
+      font-size: 13px;
+      text-align: center;
+    }
+  </style>
 </head>
+
 <body>
-    <div class="container">
-        <h1>📝 Registro de Aula</h1>
-        <p class="subtitle">Prints, links, materiais e assunto da aula</p>
 
-        <form id="classLogForm">
-            <!-- Seleção de Aluno -->
-            <div class="form-group">
-                <label for="studentSelect">
-                    Aluno/Turma
-                    <span class="label-hint">(obrigatório)</span>
-                </label>
-                <div class="autocomplete-wrapper">
-                    <input 
-                        type="text" 
-                        id="studentSelect" 
-                        placeholder="Comece a digitar o nome..." 
-                        autocomplete="off"
-                        required
-                    >
-                    <div class="autocomplete-list" id="autocompleteList"></div>
-                </div>
-                <input type="hidden" id="studentId" name="studentId">
-            </div>
+<div class="card">
+  <h1>📝 Registro de Aula</h1>
+  <p class="subtitle">Prints, links, materiais e assunto da aula</p>
 
-            <!-- Prints (SEGUNDO LUGAR) -->
-            <div class="prints-section" style="margin-top: 25px; margin-bottom: 25px; padding-top: 0; border-top: none;">
-                <div class="prints-title">📸 Prints da Aula (0-5)</div>
-                <div class="print-drop-zone" id="printDropZone">
-                    <div class="drop-icon">🖼️</div>
-                    <div class="drop-text">Cole a imagem aqui (Ctrl+V)</div>
-                    <div class="drop-hint">ou arraste um arquivo / clique para selecionar</div>
-                </div>
-                <input type="file" id="fileInput" class="hidden-file-input" accept="image/*" multiple>
-                
-                <div class="prints-gallery" id="printsGallery"></div>
-                <div class="print-counter" id="printCounter">0 prints adicionados</div>
-            </div>
+  <!-- ALUNOS -->
+  <label>Alunos / Turma <span>(selecione um ou mais)</span></label>
+  <select id="students" multiple>
+    <!-- EXEMPLOS — depois isso pode vir dinâmico -->
+    <option value="STU_2025_00001">Beatriz Vitória (STU_2025_00001)</option>
+    <option value="ODE0ODUyMzU0NjIz">Beatriz Vitória (ODE0ODUyMzU0NjIz)</option>
+  </select>
 
-            <!-- Links -->
-            <div class="form-group">
-                <label for="links">
-                    Links
-                    <span class="label-hint">(opcional - um por linha)</span>
-                </label>
-                <textarea 
-                    id="links" 
-                    name="links" 
-                    placeholder="https://quizizz.com/...&#10;https://classroom.google.com/..."
-                    style="min-height: 60px;"
-                ></textarea>
-            </div>
+  <!-- PRINTS -->
+  <label>Prints da aula <span>(opcional)</span></label>
+  <div class="upload-box" onclick="document.getElementById('prints').click()">
+    Cole a imagem aqui (Ctrl+V) ou clique para selecionar
+  </div>
+  <input type="file" id="prints" multiple accept="image/*" style="display:none"/>
 
-            <!-- PDFs -->
-            <div class="form-group">
-                <label for="pdfs">
-                    PDFs (Apostilas)
-                    <span class="label-hint">(opcional - um por linha)</span>
-                </label>
-                <textarea 
-                    id="pdfs" 
-                    name="pdfs" 
-                    placeholder="https://drive.google.com/...&#10;https://..."
-                    style="min-height: 60px;"
-                ></textarea>
-            </div>
+  <!-- LINKS -->
+  <label>Links <span>(opcional – um por linha)</span></label>
+  <textarea id="links" placeholder="https://quizizz.com/..."></textarea>
 
-            <!-- Vídeos -->
-            <div class="form-group">
-                <label for="videos">
-                    Vídeos
-                    <span class="label-hint">(opcional - um por linha)</span>
-                </label>
-                <textarea 
-                    id="videos" 
-                    name="videos" 
-                    placeholder="https://youtube.com/...&#10;https://..."
-                    style="min-height: 60px;"
-                ></textarea>
-            </div>
+  <!-- PDFs -->
+  <label>PDFs / Apostilas <span>(opcional – um por linha)</span></label>
+  <textarea id="pdfs" placeholder="https://drive.google.com/..."></textarea>
 
-            <!-- Assunto da Aula (ÚLTIMO CAMPO) -->
-            <div class="form-group">
-                <label for="subject">
-                    Assunto da Aula
-                    <span class="label-hint">(opcional)</span>
-                </label>
-                <textarea 
-                    id="subject" 
-                    name="subject" 
-                    placeholder="Ex: Present Continuous — ações em progresso"
-                ></textarea>
-            </div>
+  <!-- VÍDEOS -->
+  <label>Vídeos <span>(opcional – um por linha)</span></label>
+  <textarea id="videos" placeholder="https://youtube.com/..."></textarea>
 
-            <!-- Botões -->
-            <div class="button-group">
-                <button type="submit" class="submit-btn" id="submitBtn">Enviar Registro</button>
-                <button type="button" class="close-btn" id="closeBtn">Limpar</button>
-            </div>
+  <!-- ASSUNTO -->
+  <label>Assunto da Aula <span>(opcional)</span></label>
+  <textarea id="topic" placeholder="Ex: Present Continuous — ações em progresso"></textarea>
 
-            <div class="status-message" id="statusMessage"></div>
-        </form>
-    </div>
+  <!-- BOTÕES -->
+  <div class="buttons">
+    <button class="submit" onclick="submitForm()">Enviar Registro</button>
+    <button class="clear" onclick="clearForm()">Limpar</button>
+  </div>
 
-    <script>
-        // ===== CONFIGURAÇÃO =====
-        const API_URL = 'https://script.google.com/macros/s/AKfycby-yS1wFZ6eCZVt5jarO1RyOuG1EBQjS8PhsVdlGLpEwX2HpW5LsffOalNn4PN0BHFJ/exec';
-        
-        // ===== ESTADO DO FORMULÁRIO =====
-        const state = {
-            studentId: null,
-            prints: [],
-            students: []
-        };
+  <div class="status" id="status"></div>
+</div>
 
-        // ===== ELEMENTOS DO DOM =====
-        const form = document.getElementById('classLogForm');
-        const studentSelect = document.getElementById('studentSelect');
-        const studentIdInput = document.getElementById('studentId');
-        const autocompleteList = document.getElementById('autocompleteList');
-        const printDropZone = document.getElementById('printDropZone');
-        const fileInput = document.getElementById('fileInput');
-        const printsGallery = document.getElementById('printsGallery');
-        const printCounter = document.getElementById('printCounter');
-        const submitBtn = document.getElementById('submitBtn');
-        const closeBtn = document.getElementById('closeBtn');
-        const statusMessage = document.getElementById('statusMessage');
+<script>
+  const API_URL = 'https://script.google.com/macros/s/AKfycby-yS1wFZ6eCZVt5jarO1RyOuG1EBQjS8PhsVdlGLpEwX2HpW5LsffOalNn4PN0BHFJ/exec';
 
-        // ===== CARREGAR LISTA DE ALUNOS =====
-        async function loadStudents() {
-            try {
-                showStatus('<span class="spinner"></span>Carregando alunos...', 'loading');
-                
-                const url = `${API_URL}?action=get_students`;
-                console.log('Buscando alunos de:', url);
-                
-                const response = await fetch(url);
-                const data = await response.json();
-                
-                console.log('Resposta da API:', data);
-                
-                if (data.students && Array.isArray(data.students) && data.students.length > 0) {
-                    state.students = data.students;
-                    console.log('Alunos carregados com sucesso:', state.students);
-                    showStatus('', '');
-                } else {
-                    console.error('Nenhum aluno encontrado ou erro na resposta:', data);
-                    showStatus('Erro ao carregar alunos. Verifique se há alunos ativos na planilha.', 'error');
-                }
-            } catch (error) {
-                console.error('Erro ao carregar alunos:', error);
-                showStatus('Erro de conexão ao carregar alunos. Verifique a URL do Web App.', 'error');
-            }
-        }
+  function getSelectedStudents() {
+    const select = document.getElementById('students');
+    return Array.from(select.selectedOptions).map(opt => opt.value);
+  }
 
-        // ===== AUTOCOMPLETE =====
-        studentSelect.addEventListener('input', (e) => {
-            const value = e.target.value.toLowerCase().trim();
-            
-            if (!value) {
-                autocompleteList.classList.remove('active');
-                return;
-            }
+  function submitForm() {
+    const students = getSelectedStudents();
 
-            const filtered = state.students.filter(s => 
-                s.name.toLowerCase().includes(value) || 
-                s.id.toLowerCase().includes(value)
-            );
+    if (students.length === 0) {
+      alert('Selecione pelo menos um aluno.');
+      return;
+    }
 
-            if (filtered.length === 0) {
-                autocompleteList.classList.remove('active');
-                return;
-            }
+    const payload = {
+      students,
+      links: document.getElementById('links').value.split('\n').filter(Boolean),
+      pdfs: document.getElementById('pdfs').value.split('\n').filter(Boolean),
+      videos: document.getElementById('videos').value.split('\n').filter(Boolean),
+      topic: document.getElementById('topic').value.trim(),
+      timestamp: new Date().toISOString()
+    };
 
-            autocompleteList.innerHTML = filtered.map((student, idx) => `
-                <div class="autocomplete-item" data-id="${student.id}" data-name="${student.name}">
-                    ${student.name} (${student.id})
-                </div>
-            `).join('');
+    document.getElementById('status').innerText = 'Enviando...';
 
-            autocompleteList.classList.add('active');
+    fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(() => {
+      document.getElementById('status').innerText = 'Registro enviado com sucesso.';
+      clearForm();
+    })
+    .catch(err => {
+      console.error(err);
+      document.getElementById('status').innerText = 'Erro ao enviar.';
+    });
+  }
 
-            // Adicionar listeners aos itens
-            document.querySelectorAll('.autocomplete-item').forEach(item => {
-                item.addEventListener('click', () => {
-                    selectStudent(item.dataset.id, item.dataset.name);
-                });
-            });
-        });
+  function clearForm() {
+    document.querySelectorAll('textarea').forEach(t => t.value = '');
+    document.getElementById('students').selectedIndex = -1;
+  }
+</script>
 
-        function selectStudent(id, name) {
-            state.studentId = id;
-            studentSelect.value = name;
-            studentIdInput.value = id;
-            autocompleteList.classList.remove('active');
-        }
-
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.autocomplete-wrapper')) {
-                autocompleteList.classList.remove('active');
-            }
-        });
-
-        // ===== DRAG AND DROP PARA PRINTS =====
-        printDropZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            printDropZone.classList.add('dragover');
-        });
-
-        printDropZone.addEventListener('dragleave', () => {
-            printDropZone.classList.remove('dragover');
-        });
-
-        printDropZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            printDropZone.classList.remove('dragover');
-
-            const files = e.dataTransfer?.files;
-            if (files) {
-                handlePrintFiles(files);
-            }
-        });
-
-        // ===== CTRL+V PARA PRINTS =====
-        document.addEventListener('paste', (e) => {
-            const items = e.clipboardData?.items;
-            if (!items) return;
-
-            for (let item of items) {
-                if (item.type.startsWith('image/')) {
-                    e.preventDefault();
-                    const file = item.getAsFile();
-                    handlePrintFiles([file]);
-                    break;
-                }
-            }
-        });
-
-        // ===== CLIQUE PARA SELECIONAR ARQUIVO =====
-        printDropZone.addEventListener('click', () => {
-            fileInput.click();
-        });
-
-        fileInput.addEventListener('change', (e) => {
-            if (e.target.files) {
-                handlePrintFiles(e.target.files);
-            }
-        });
-
-        // ===== PROCESSAR ARQUIVOS DE PRINT =====
-        function handlePrintFiles(files) {
-            if (state.prints.length >= 5) {
-                showStatus('Máximo de 5 prints atingido.', 'error');
-                return;
-            }
-
-            for (let file of files) {
-                if (!file.type.startsWith('image/')) {
-                    showStatus('Por favor, selecione apenas imagens.', 'error');
-                    continue;
-                }
-
-                if (state.prints.length >= 5) break;
-
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    state.prints.push({
-                        name: file.name,
-                        data: e.target.result
-                    });
-                    renderPrints();
-                    showStatus('Print adicionado com sucesso!', 'success');
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        // ===== RENDERIZAR GALERIA DE PRINTS =====
-        function renderPrints() {
-            printsGallery.innerHTML = state.prints.map((print, idx) => `
-                <div class="print-item">
-                    <img src="${print.data}" class="print-image" alt="Print ${idx + 1}">
-                    <button type="button" class="print-remove" data-index="${idx}">✕</button>
-                </div>
-            `).join('');
-
-            printCounter.textContent = `${state.prints.length} print${state.prints.length !== 1 ? 's' : ''} adicionado${state.prints.length !== 1 ? 's' : ''}`;
-
-            document.querySelectorAll('.print-remove').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const idx = parseInt(btn.dataset.index);
-                    state.prints.splice(idx, 1);
-                    renderPrints();
-                });
-            });
-        }
-
-        // ===== ENVIAR FORMULÁRIO =====
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            if (!state.studentId) {
-                showStatus('Por favor, selecione um aluno.', 'error');
-                return;
-            }
-
-            // Validar que pelo menos um campo foi preenchido
-            const subject = document.getElementById('subject').value.trim();
-            const links = document.getElementById('links').value.trim();
-            const pdfs = document.getElementById('pdfs').value.trim();
-            const videos = document.getElementById('videos').value.trim();
-
-            if (!subject && !links && !pdfs && !videos && state.prints.length === 0) {
-                showStatus('Por favor, preencha pelo menos um campo (print, link, PDF, vídeo ou assunto).', 'error');
-                return;
-            }
-
-            submitBtn.disabled = true;
-            showStatus('<span class="spinner"></span>Enviando registro...', 'loading');
-
-            try {
-                const payload = {
-                    type: 'class_log',
-                    student_id: state.studentId,
-                    subject: subject,
-                    links: links,
-                    pdfs: pdfs,
-                    videos: videos,
-                    images: state.prints.map(p => p.data),
-                    created_at: new Date().toLocaleString('pt-BR')
-                };
-
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
-                });
-
-                // Com mode: 'no-cors', aguardamos um tempo
-                await new Promise(resolve => setTimeout(resolve, 2000));
-
-                showStatus('✓ Registro enviado com sucesso!', 'success');
-
-                // Limpar formulário
-                setTimeout(() => {
-                    form.reset();
-                    state.prints = [];
-                    state.studentId = null;
-                    studentIdInput.value = '';
-                    renderPrints();
-                    submitBtn.disabled = false;
-                    showStatus('', '');
-                }, 2000);
-
-            } catch (error) {
-                console.error('Erro ao enviar:', error);
-                showStatus('Erro ao enviar o registro. Tente novamente.', 'error');
-                submitBtn.disabled = false;
-            }
-        });
-
-        // ===== BOTÃO LIMPAR =====
-        closeBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            form.reset();
-            state.prints = [];
-            state.studentId = null;
-            studentIdInput.value = '';
-            renderPrints();
-            showStatus('', '');
-        });
-
-        // ===== UTILITÁRIOS =====
-        function showStatus(message, type) {
-            if (!message) {
-                statusMessage.classList.remove('show');
-                return;
-            }
-            statusMessage.innerHTML = message;
-            statusMessage.className = `status-message show ${type}`;
-        }
-
-        // ===== INICIALIZAR =====
-        loadStudents();
-    </script>
 </body>
 </html>
