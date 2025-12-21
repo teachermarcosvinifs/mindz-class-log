@@ -1,210 +1,379 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <title>Registro de Aula</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Registro de Aula</title>
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #6b6bd6, #7f7fe8);
-      margin: 0;
-      padding: 40px 0;
-    }
+<style>
+/* ================= RESET ================= */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-    .card {
-      background: #fff;
-      max-width: 520px;
-      margin: auto;
-      padding: 28px;
-      border-radius: 14px;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-    }
+/* ================= BASE ================= */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
 
-    h1 {
-      font-size: 20px;
-      margin-bottom: 4px;
-    }
+.container {
+  background: #fff;
+  width: 100%;
+  max-width: 720px;
+  border-radius: 14px;
+  padding: 36px;
+  box-shadow: 0 30px 80px rgba(0,0,0,.35);
+}
 
-    p.subtitle {
-      font-size: 13px;
-      color: #666;
-      margin-bottom: 22px;
-    }
+h1 {
+  font-size: 28px;
+  margin-bottom: 6px;
+}
 
-    label {
-      font-size: 13px;
-      font-weight: bold;
-      display: block;
-      margin-top: 18px;
-    }
+.subtitle {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 28px;
+}
 
-    label span {
-      font-weight: normal;
-      color: #888;
-    }
+/* ================= FORM ================= */
+.form-group {
+  margin-bottom: 26px;
+}
 
-    select, textarea, input {
-      width: 100%;
-      margin-top: 6px;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 14px;
-      box-sizing: border-box;
-    }
+label {
+  font-weight: 600;
+  font-size: 14px;
+  display: block;
+  margin-bottom: 8px;
+}
 
-    select[multiple] {
-      height: 120px;
-    }
+.hint {
+  font-weight: 400;
+  font-size: 12px;
+  color: #888;
+}
 
-    textarea {
-      resize: vertical;
-      min-height: 70px;
-    }
+/* ================= MULTI SELECT ================= */
+.multi-select {
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 10px;
+  cursor: text;
+}
 
-    .upload-box {
-      border: 2px dashed #bbb;
-      border-radius: 10px;
-      padding: 20px;
-      text-align: center;
-      margin-top: 8px;
-      cursor: pointer;
-      color: #666;
-      font-size: 13px;
-    }
+.multi-select:focus-within {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102,126,234,.15);
+}
 
-    .upload-box:hover {
-      background: #f7f7f7;
-    }
+.selected-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 6px;
+}
 
-    .buttons {
-      display: flex;
-      gap: 12px;
-      margin-top: 28px;
-    }
+.chip {
+  background: #667eea;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 18px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
 
-    button {
-      flex: 1;
-      padding: 12px;
-      border-radius: 10px;
-      border: none;
-      font-size: 14px;
-      cursor: pointer;
-    }
+.chip span {
+  cursor: pointer;
+  font-weight: bold;
+}
 
-    button.submit {
-      background: #6b6bd6;
-      color: #fff;
-    }
+.search-input {
+  border: none;
+  outline: none;
+  font-size: 14px;
+  width: 100%;
+}
 
-    button.clear {
-      background: #eee;
-    }
+.dropdown {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  max-height: 180px;
+  overflow-y: auto;
+  margin-top: 6px;
+  display: none;
+}
 
-    .status {
-      margin-top: 16px;
-      font-size: 13px;
-      text-align: center;
-    }
-  </style>
+.dropdown.active {
+  display: block;
+}
+
+.dropdown div {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.dropdown div:hover {
+  background: #f2f4ff;
+}
+
+/* ================= PRINTS ================= */
+.print-zone {
+  border: 3px dashed #667eea;
+  border-radius: 10px;
+  padding: 30px;
+  text-align: center;
+  background: #f8f9ff;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.print-zone:hover {
+  background: #eef0ff;
+}
+
+.print-zone.drag {
+  background: #e5e8ff;
+}
+
+.print-text {
+  font-weight: 600;
+  color: #667eea;
+}
+
+.print-hint {
+  font-size: 12px;
+  color: #888;
+  margin-top: 4px;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px,1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.gallery img {
+  width: 100%;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.counter {
+  font-size: 12px;
+  color: #666;
+  text-align: center;
+  margin-top: 8px;
+}
+
+/* ================= TEXTAREAS ================= */
+textarea {
+  width: 100%;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 14px;
+  resize: vertical;
+}
+
+textarea:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+/* ================= BUTTONS ================= */
+.buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+button {
+  flex: 1;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.submit {
+  background: linear-gradient(135deg,#667eea,#764ba2);
+  color: #fff;
+}
+
+.clear {
+  background: #eee;
+}
+</style>
 </head>
 
 <body>
+<div class="container">
+<h1>📝 Registro de Aula</h1>
+<p class="subtitle">Prints, links, materiais e assunto da aula</p>
 
-<div class="card">
-  <h1>📝 Registro de Aula</h1>
-  <p class="subtitle">Prints, links, materiais e assunto da aula</p>
+<!-- ALUNOS -->
+<div class="form-group">
+<label>Alunos / Turma <span class="hint">(busque e selecione um ou mais)</span></label>
 
-  <!-- ALUNOS -->
-  <label>Alunos / Turma <span>(selecione um ou mais)</span></label>
-  <select id="students" multiple>
-    <!-- EXEMPLOS — depois isso pode vir dinâmico -->
-    <option value="STU_2025_00001">Beatriz Vitória (STU_2025_00001)</option>
-    <option value="ODE0ODUyMzU0NjIz">Beatriz Vitória (ODE0ODUyMzU0NjIz)</option>
-  </select>
+<div class="multi-select" id="multiSelect">
+  <div class="selected-list" id="selectedList"></div>
+  <input class="search-input" id="searchInput" placeholder="Digite o nome do aluno..."/>
+</div>
+<div class="dropdown" id="dropdown"></div>
+</div>
 
-  <!-- PRINTS -->
-  <label>Prints da aula <span>(opcional)</span></label>
-  <div class="upload-box" onclick="document.getElementById('prints').click()">
-    Cole a imagem aqui (Ctrl+V) ou clique para selecionar
-  </div>
-  <input type="file" id="prints" multiple accept="image/*" style="display:none"/>
+<!-- PRINTS -->
+<div class="form-group">
+<label>📸 Prints da aula <span class="hint">(opcional • até 5 • Ctrl+V)</span></label>
 
-  <!-- LINKS -->
-  <label>Links <span>(opcional – um por linha)</span></label>
-  <textarea id="links" placeholder="https://quizizz.com/..."></textarea>
+<div class="print-zone" id="printZone">
+  <div class="print-text">Cole a imagem aqui (Ctrl + V)</div>
+  <div class="print-hint">ou arraste / clique para selecionar</div>
+</div>
 
-  <!-- PDFs -->
-  <label>PDFs / Apostilas <span>(opcional – um por linha)</span></label>
-  <textarea id="pdfs" placeholder="https://drive.google.com/..."></textarea>
+<input type="file" id="fileInput" accept="image/*" multiple hidden/>
+<div class="gallery" id="gallery"></div>
+<div class="counter" id="counter">0 de 5 prints</div>
+</div>
 
-  <!-- VÍDEOS -->
-  <label>Vídeos <span>(opcional – um por linha)</span></label>
-  <textarea id="videos" placeholder="https://youtube.com/..."></textarea>
+<!-- LINKS -->
+<div class="form-group">
+<label>Links <span class="hint">(opcional • um por linha)</span></label>
+<textarea id="links"></textarea>
+</div>
 
-  <!-- ASSUNTO -->
-  <label>Assunto da Aula <span>(opcional)</span></label>
-  <textarea id="topic" placeholder="Ex: Present Continuous — ações em progresso"></textarea>
+<div class="form-group">
+<label>PDFs / Apostilas <span class="hint">(opcional • um por linha)</span></label>
+<textarea id="pdfs"></textarea>
+</div>
 
-  <!-- BOTÕES -->
-  <div class="buttons">
-    <button class="submit" onclick="submitForm()">Enviar Registro</button>
-    <button class="clear" onclick="clearForm()">Limpar</button>
-  </div>
+<div class="form-group">
+<label>Vídeos <span class="hint">(opcional • arquivos próprios)</span></label>
+<textarea id="videos"></textarea>
+</div>
 
-  <div class="status" id="status"></div>
+<div class="form-group">
+<label>Assunto da Aula <span class="hint">(opcional)</span></label>
+<textarea id="subject"></textarea>
+</div>
+
+<div class="buttons">
+<button class="submit">Enviar Registro</button>
+<button class="clear" onclick="location.reload()">Limpar</button>
+</div>
+
 </div>
 
 <script>
-  const API_URL = 'https://script.google.com/macros/s/AKfycby-yS1wFZ6eCZVt5jarO1RyOuG1EBQjS8PhsVdlGLpEwX2HpW5LsffOalNn4PN0BHFJ/exec';
+/* ================= CONFIG ================= */
+const API_URL = "https://script.google.com/macros/s/AKfycby-yS1wFZ6eCZVt5jarO1RyOuG1EBQjS8PhsVdlGLpEwX2HpW5LsffOalNn4PN0BHFJ/exec";
 
-  function getSelectedStudents() {
-    const select = document.getElementById('students');
-    return Array.from(select.selectedOptions).map(opt => opt.value);
-  }
+/* ================= STATE ================= */
+let students = [];
+let selected = [];
+let prints = [];
 
-  function submitForm() {
-    const students = getSelectedStudents();
+/* ================= LOAD STUDENTS ================= */
+fetch(API_URL + "?action=get_students")
+.then(r=>r.json())
+.then(d=>students=d.students||[]);
 
-    if (students.length === 0) {
-      alert('Selecione pelo menos um aluno.');
-      return;
+/* ================= MULTI SELECT ================= */
+const input = document.getElementById("searchInput");
+const dropdown = document.getElementById("dropdown");
+const selectedList = document.getElementById("selectedList");
+
+input.addEventListener("input",()=>{
+  dropdown.innerHTML="";
+  const v=input.value.toLowerCase();
+  if(!v) return dropdown.classList.remove("active");
+  students.filter(s=>s.name.toLowerCase().includes(v))
+  .forEach(s=>{
+    const div=document.createElement("div");
+    div.textContent=s.name;
+    div.onclick=()=>addStudent(s);
+    dropdown.appendChild(div);
+  });
+  dropdown.classList.add("active");
+});
+
+function addStudent(s){
+  if(selected.find(x=>x.id===s.id)) return;
+  selected.push(s);
+  renderSelected();
+  input.value="";
+  dropdown.classList.remove("active");
+}
+
+function removeStudent(id){
+  selected=selected.filter(s=>s.id!==id);
+  renderSelected();
+}
+
+function renderSelected(){
+  selectedList.innerHTML="";
+  selected.forEach(s=>{
+    const chip=document.createElement("div");
+    chip.className="chip";
+    chip.innerHTML=`${s.name} <span onclick="removeStudent('${s.id}')">✕</span>`;
+    selectedList.appendChild(chip);
+  });
+}
+
+/* ================= PRINTS CTRL+V ================= */
+const zone=document.getElementById("printZone");
+const gallery=document.getElementById("gallery");
+const counter=document.getElementById("counter");
+const fileInput=document.getElementById("fileInput");
+
+zone.onclick=()=>fileInput.click();
+
+document.addEventListener("paste",e=>{
+  [...e.clipboardData.items].forEach(i=>{
+    if(i.type.startsWith("image/")){
+      addPrint(i.getAsFile());
     }
+  });
+});
 
-    const payload = {
-      students,
-      links: document.getElementById('links').value.split('\n').filter(Boolean),
-      pdfs: document.getElementById('pdfs').value.split('\n').filter(Boolean),
-      videos: document.getElementById('videos').value.split('\n').filter(Boolean),
-      topic: document.getElementById('topic').value.trim(),
-      timestamp: new Date().toISOString()
-    };
+fileInput.onchange=e=>{
+  [...e.target.files].forEach(addPrint);
+};
 
-    document.getElementById('status').innerText = 'Enviando...';
+function addPrint(file){
+  if(prints.length>=5) return;
+  const r=new FileReader();
+  r.onload=e=>{
+    prints.push(e.target.result);
+    renderPrints();
+  };
+  r.readAsDataURL(file);
+}
 
-    fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    })
-    .then(res => res.json())
-    .then(() => {
-      document.getElementById('status').innerText = 'Registro enviado com sucesso.';
-      clearForm();
-    })
-    .catch(err => {
-      console.error(err);
-      document.getElementById('status').innerText = 'Erro ao enviar.';
-    });
-  }
-
-  function clearForm() {
-    document.querySelectorAll('textarea').forEach(t => t.value = '');
-    document.getElementById('students').selectedIndex = -1;
-  }
+function renderPrints(){
+  gallery.innerHTML="";
+  prints.forEach(p=>{
+    const img=document.createElement("img");
+    img.src=p;
+    gallery.appendChild(img);
+  });
+  counter.textContent=`${prints.length} de 5 prints`;
+}
 </script>
-
 </body>
 </html>
