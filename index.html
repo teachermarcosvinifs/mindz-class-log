@@ -215,6 +215,11 @@ button {
   color: #fff;
 }
 
+.submit:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
 .clear {
   background: #eee;
 }
@@ -225,7 +230,6 @@ button {
 <div class="container">
 <h1>📝 Registro de Aula</h1>
 
-<!-- ALUNOS -->
 <div class="form-group">
 <label>Alunos / Turma <span class="hint">(busque e selecione um ou mais)</span></label>
 
@@ -236,7 +240,6 @@ button {
 <div class="dropdown" id="dropdown"></div>
 </div>
 
-<!-- PRINTS -->
 <div class="form-group">
 <label>📸 Prints da aula <span class="hint">(opcional • até 5 • Ctrl+V)</span></label>
 
@@ -250,7 +253,6 @@ button {
 <div class="counter" id="counter">0 de 5 prints</div>
 </div>
 
-<!-- LINKS -->
 <div class="form-group">
 <label>Links <span class="hint">(opcional • um por linha)</span></label>
 <textarea id="links"></textarea>
@@ -280,6 +282,7 @@ button {
 
 <script>
 /* ================= CONFIG ================= */
+// Verifique se esta URL está atualizada conforme o último deploy no Apps Script
 const API_URL = "https://script.google.com/macros/s/AKfycby-yS1wFZ6eCZVt5jarO1RyOuG1EBQjS8PhsVdlGLpEwX2HpW5LsffOalNn4PN0BHFJ/exec";
 
 /* ================= STATE ================= */
@@ -290,7 +293,8 @@ let prints = [];
 /* ================= LOAD STUDENTS ================= */
 fetch(API_URL + "?action=get_students")
 .then(r=>r.json())
-.then(d=>students=d.students||[]);
+.then(d=>students=d.students||[])
+.catch(err => console.error("Erro ao carregar alunos:", err));
 
 /* ================= MULTI SELECT ================= */
 const input = document.getElementById("searchInput");
@@ -373,11 +377,7 @@ function renderPrints(){
   });
   counter.textContent=`${prints.length} de 5 prints`;
 }
-</script>
-</body>
-</html>
 
-<script>
 /* ================= SUBMIT ================= */
 const submitBtn = document.querySelector(".submit");
 
@@ -400,26 +400,30 @@ submitBtn.addEventListener("click", async () => {
       subject: document.getElementById("subject").value
     };
 
-    const res = await fetch(API_URL, {
+    // Usando mode: 'no-cors' para evitar erros de bloqueio do navegador (CORS)
+    // O Google Apps Script processará o POST mesmo que o navegador não consiga ler a resposta de volta.
+    await fetch(API_URL, {
       method: "POST",
-      body: JSON.stringify(payload),
-      headers: { "Content-Type": "application/json" }
+      mode: "no-cors", 
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "text/plain" // Evita o preflight check do navegador
+      },
+      body: JSON.stringify(payload)
     });
 
-    const data = await res.json();
-
-    if (!data.success) {
-      throw new Error(data.error || "Erro desconhecido");
-    }
-
-    alert(`Registro enviado com sucesso para ${data.students} aluno(s)!`);
+    // Como o modo é no-cors, não podemos validar o JSON de retorno.
+    // Se o código chegou até aqui, assumimos o sucesso do envio.
+    alert(`Registro enviado com sucesso!`);
     location.reload();
 
   } catch (err) {
-    alert("Erro ao enviar registro:\n" + err.message);
+    console.error("Erro no envio:", err);
+    alert("Houve uma falha na conexão. Verifique se o script do Google está publicado corretamente.");
     submitBtn.disabled = false;
     submitBtn.textContent = "Enviar Registro";
   }
 });
 </script>
-
+</body>
+</html>
