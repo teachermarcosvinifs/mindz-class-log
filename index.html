@@ -224,7 +224,6 @@ button {
 <body>
 <div class="container">
 <h1>📝 Registro de Aula</h1>
-
 <!-- ALUNOS -->
 <div class="form-group">
 <label>Alunos / Turma <span class="hint">(busque e selecione um ou mais)</span></label>
@@ -278,20 +277,20 @@ button {
 
 </div>
 
+<!-- ================= LOAD STUDENTS (CORS SAFE) ================= -->
+<script src="https://script.google.com/macros/s/AKfycby-yS1wFZ6eCZVt5jarO1RyOuG1EBQjS8PhsVdlGLpEwX2HpW5LsffOalNn4PN0BHFJ/exec?action=get_students"></script>
+
 <script>
 /* ================= CONFIG ================= */
 const API_URL = "https://script.google.com/macros/s/AKfycby-yS1wFZ6eCZVt5jarO1RyOuG1EBQjS8PhsVdlGLpEwX2HpW5LsffOalNn4PN0BHFJ/exec";
 
 /* ================= STATE ================= */
-let students = [];
+let students = (window.__STUDENTS__ && window.__STUDENTS__.students) || [];
 let selected = [];
 let prints = [];
+</script>
 
-/* ================= LOAD STUDENTS ================= */
-fetch(API_URL + "?action=get_students")
-.then(r=>r.json())
-.then(d=>students=d.students||[]);
-
+<script>
 /* ================= MULTI SELECT ================= */
 const input = document.getElementById("searchInput");
 const dropdown = document.getElementById("dropdown");
@@ -333,8 +332,10 @@ function renderSelected(){
     selectedList.appendChild(chip);
   });
 }
+</script>
 
-/* ================= PRINTS CTRL+V ================= */
+<script>
+/* ================= PRINTS ================= */
 const zone=document.getElementById("printZone");
 const gallery=document.getElementById("gallery");
 const counter=document.getElementById("counter");
@@ -374,16 +375,13 @@ function renderPrints(){
   counter.textContent=`${prints.length} de 5 prints`;
 }
 </script>
-</body>
-</html>
 
-
+<!-- ================= SUBMIT ================= -->
 <script>
-/* ================= SUBMIT ================= */
 const submitBtn = document.querySelector(".submit");
 
 submitBtn.addEventListener("click", async () => {
-  if (selected.length === 0) {
+  if (!selected || selected.length === 0) {
     alert("Selecione pelo menos um aluno.");
     return;
   }
@@ -394,32 +392,37 @@ submitBtn.addEventListener("click", async () => {
   try {
     const payload = {
       student_ids: selected.map(s => s.id),
-      images: prints,
-      links: document.getElementById("links").value,
-      pdfs: document.getElementById("pdfs").value,
-      videos: document.getElementById("videos").value,
-      subject: document.getElementById("subject").value
+      images: prints || [],
+      links: document.getElementById("links")?.value || "",
+      pdfs: document.getElementById("pdfs")?.value || "",
+      videos: document.getElementById("videos")?.value || "",
+      subject: document.getElementById("subject")?.value || ""
     };
 
-    const res = await fetch(API_URL, {
+    const response = await fetch(API_URL, {
       method: "POST",
-      body: JSON.stringify(payload),
-      headers: { "Content-Type": "application/json" }
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
     });
 
-    const data = await res.json();
+    const result = await response.json();
 
-    if (!data.success) {
-      throw new Error(data.error || "Erro desconhecido");
+    if (!result.success) {
+      throw new Error(result.error || "Erro desconhecido no envio");
     }
 
-    alert(`Registro enviado com sucesso para ${data.students} aluno(s)!`);
+    alert(`Registro enviado com sucesso para ${result.students} aluno(s)!`);
     location.reload();
 
-  } catch (err) {
-    alert("Erro ao enviar registro:\n" + err.message);
+  } catch (error) {
+    console.error(error);
+    alert("Erro ao enviar registro:\n" + error.message);
     submitBtn.disabled = false;
     submitBtn.textContent = "Enviar Registro";
   }
 });
 </script>
+
+</body>
+</html>
+
