@@ -423,29 +423,28 @@ submitBtn.addEventListener("click", async () => {
 });
 </script>
 
-  <script>
-async function enviarDadosParaBackend(payload) {
-  try {
-    const response = await fetch(
-      'https://script.google.com/macros/s/AKfycby-yS1wFZ6eCZVt5jarO1RyOuG1EBQjS8PhsVdlGLpEwX2HpW5LsffOalNn4PN0BHFJ/exec',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      }
-    );
+<script>
+function enviarDadosParaBackend(payload) {
 
-    const result = await response.json();
-    console.log('Resposta do backend:', result);
-    return result;
+  const formData = new URLSearchParams();
+  formData.append('data', JSON.stringify(payload));
 
-  } catch (error) {
-    console.error('Erro ao enviar dados para o backend:', error);
-  }
+  fetch('https://script.google.com/macros/s/AKfycby-yS1wFZ6eCZVt5jarO1RyOuG1EBQjS8PhsVdlGLpEwX2HpW5LsffOalNn4PN0BHFJ/exec', {
+    method: 'POST',
+    body: formData
+  })
+  .then(res => res.json())
+  .then(data => {
+    console.log('Resposta do backend:', data);
+    alert('Registro enviado com sucesso');
+  })
+  .catch(err => {
+    console.error('Erro ao enviar:', err);
+    alert('Erro ao enviar registro');
+  });
 }
 </script>
+
 
 </body>
 </html>
